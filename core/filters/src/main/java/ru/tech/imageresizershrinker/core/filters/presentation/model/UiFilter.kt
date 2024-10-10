@@ -28,7 +28,7 @@ import kotlin.reflect.full.primaryConstructor
 sealed class UiFilter<T>(
     @StringRes val title: Int,
     val paramsInfo: List<FilterParam> = listOf(),
-    override val value: T
+    override val value: T,
 ) : Filter<T> {
 
     constructor(
@@ -112,7 +112,9 @@ sealed class UiFilter<T>(
                     UiSimpleOldTvFilter(),
                     UiGothamFilter(),
                     UiHDRFilter(),
-                    UiSimpleSketchFilter()
+                    UiSimpleSketchFilter(),
+                    UiSobelSimpleFilter(),
+                    UiLaplacianSimpleFilter()
                 ),
                 listOf(
                     UiHueFilter(),
@@ -238,7 +240,7 @@ sealed class UiFilter<T>(
                     UiStackBlurFilter(),
                     UiFastBlurFilter(),
                     UiZoomBlurFilter(),
-                    UiMotionBlurFilter(),
+                    UiEnhancedZoomBlurFilter(),
                     UiFastBilaterialBlurFilter(),
                     UiPoissonBlurFilter(),
                     UiMedianBlurFilter(),
@@ -253,7 +255,8 @@ sealed class UiFilter<T>(
                     UiGaussianBoxBlurFilter(),
                     UiLinearFastGaussianBlurNextFilter(),
                     UiLinearFastGaussianBlurFilter(),
-                    UiLinearGaussianBlurFilter()
+                    UiLinearGaussianBlurFilter(),
+                    UiMotionBlurFilter()
                 ),
                 listOf(
                     UiCrystallizeFilter(),
@@ -314,7 +317,7 @@ sealed class UiFilter<T>(
         }
 
         fun groupedEntries(
-            context: Context
+            context: Context,
         ) = groupedEntries.map { list ->
             list.sortedBy { context.getString(it.title) }
         }

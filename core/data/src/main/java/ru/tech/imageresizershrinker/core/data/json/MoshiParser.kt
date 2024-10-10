@@ -15,24 +15,27 @@
  * along with this program.  If not, see <http://www.apache.org/licenses/LICENSE-2.0>.
  */
 
-package ru.tech.imageresizershrinker.feature.filters.data.model
+package ru.tech.imageresizershrinker.core.data.json
 
-import android.graphics.Bitmap
-import com.t8rin.trickle.Trickle
-import ru.tech.imageresizershrinker.core.domain.model.IntegerSize
-import ru.tech.imageresizershrinker.core.domain.transformation.Transformation
-import ru.tech.imageresizershrinker.core.filters.domain.model.Filter
+import com.squareup.moshi.Moshi
+import ru.tech.imageresizershrinker.core.domain.json.JsonParser
+import java.lang.reflect.Type
+import javax.inject.Inject
 
-internal class GothamFilter(
-    override val value: Unit = Unit,
-) : Transformation<Bitmap>, Filter.Gotham {
+internal class MoshiParser @Inject constructor(private val moshi: Moshi) : JsonParser {
 
-    override val cacheKey: String
-        get() = value.hashCode().toString()
+    override fun <T> toJson(
+        obj: T,
+        type: Type,
+    ): String? = runCatching {
+        moshi.adapter<T>(type).toJson(obj)
+    }.getOrNull()
 
-    override suspend fun transform(
-        input: Bitmap,
-        size: IntegerSize,
-    ): Bitmap = Trickle.gotham(input)
+    override fun <T> fromJson(
+        json: String,
+        type: Type,
+    ): T? = runCatching {
+        moshi.adapter<T>(type).fromJson(json)
+    }.getOrNull()
 
 }

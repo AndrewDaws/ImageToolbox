@@ -19,16 +19,14 @@ package ru.tech.imageresizershrinker.feature.filters.data.model
 
 import android.graphics.Bitmap
 import com.awxkee.aire.Aire
-import com.awxkee.aire.Scalar
 import ru.tech.imageresizershrinker.core.domain.model.IntegerSize
 import ru.tech.imageresizershrinker.core.domain.transformation.Transformation
-import ru.tech.imageresizershrinker.core.filters.domain.model.BlurEdgeMode
+import ru.tech.imageresizershrinker.core.filters.domain.model.EnhancedZoomBlurParams
 import ru.tech.imageresizershrinker.core.filters.domain.model.Filter
-import ru.tech.imageresizershrinker.feature.filters.data.utils.toEdgeMode
 
-internal class MotionBlurFilter(
-    override val value: Triple<Int, Float, BlurEdgeMode> = Triple(51, 45f, BlurEdgeMode.Reflect101),
-) : Transformation<Bitmap>, Filter.MotionBlur {
+internal class EnhancedZoomBlurFilter(
+    override val value: EnhancedZoomBlurParams = EnhancedZoomBlurParams.Default,
+) : Transformation<Bitmap>, Filter.EnhancedZoomBlur {
 
     override val cacheKey: String
         get() = value.hashCode().toString()
@@ -36,12 +34,13 @@ internal class MotionBlurFilter(
     override suspend fun transform(
         input: Bitmap,
         size: IntegerSize,
-    ): Bitmap = Aire.motionBlur(
+    ): Bitmap = Aire.zoomBlur(
         bitmap = input,
-        kernelSize = value.first,
-        angle = value.second,
-        borderMode = value.third.toEdgeMode(),
-        borderScalar = Scalar.ZEROS
+        kernelSize = value.radius * 2 + 1,
+        sigma = value.sigma,
+        centerX = value.centerX,
+        centerY = value.centerY,
+        strength = value.strength,
+        angle = value.angle * Math.PI.toFloat() / 180f
     )
-
 }

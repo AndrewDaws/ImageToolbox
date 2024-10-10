@@ -15,26 +15,30 @@
  * along with this program.  If not, see <http://www.apache.org/licenses/LICENSE-2.0>.
  */
 
-package ru.tech.imageresizershrinker.core.filters.domain.model
+package ru.tech.imageresizershrinker.core.domain.json
 
-data class MotionBlurParams(
-    val radius: Int,
-    val sigma: Float,
-    val centerX: Float,
-    val centerY: Float,
-    val strength: Float,
-    val angle: Float
-) {
-    companion object {
-        val Default by lazy {
-            MotionBlurParams(
-                radius = 25,
-                sigma = 3f,
-                centerX = 0.5f,
-                centerY = 0.5f,
-                strength = 0.5f,
-                angle = 90f
-            )
-        }
-    }
+import java.lang.reflect.Type
+
+interface JsonParser {
+
+    /**
+     * [type] is type of [obj]: [T], which is converted to json
+     *
+     * @return Json from given object
+     */
+    fun <T> toJson(
+        obj: T,
+        type: Type,
+    ): String?
+
+    /**
+     * [type] is type of [T], which is will be parsed from json
+     *
+     * @return Object from given json
+     */
+    fun <T> fromJson(
+        json: String,
+        type: Type,
+    ): T?
+
 }

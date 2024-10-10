@@ -17,30 +17,10 @@
 
 package ru.tech.imageresizershrinker.core.filters.presentation.model
 
-import ru.tech.imageresizershrinker.core.domain.utils.NEAREST_ODD_ROUNDING
-import ru.tech.imageresizershrinker.core.filters.domain.model.BlurEdgeMode
 import ru.tech.imageresizershrinker.core.filters.domain.model.Filter
-import ru.tech.imageresizershrinker.core.filters.domain.model.FilterParam
 import ru.tech.imageresizershrinker.core.resources.R
 
-class UiMotionBlurFilter(
-    override val value: Triple<Int, Float, BlurEdgeMode> = Triple(51, 45f, BlurEdgeMode.Reflect101),
-) : UiFilter<Triple<Int, Float, BlurEdgeMode>>(
-    title = R.string.motion_blur,
-    value = value,
-    paramsInfo = listOf(
-        FilterParam(
-            title = R.string.just_size,
-            valueRange = 0f..201f,
-            roundTo = NEAREST_ODD_ROUNDING
-        ),
-        FilterParam(
-            title = R.string.angle,
-            valueRange = 0f..360f
-        ),
-        FilterParam(
-            title = R.string.edge_mode,
-            valueRange = 0f..0f
-        )
-    )
-), Filter.MotionBlur
+class UiLaplacianSimpleFilter : UiFilter<Unit>(
+    title = R.string.laplacian_simple,
+    value = Unit
+), Filter.LaplacianSimple
