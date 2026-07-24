@@ -39,7 +39,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
-import com.t8rin.imagetoolbox.core.resources.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
@@ -60,6 +59,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.t8rin.imagetoolbox.core.domain.image.model.MetadataTag
+import com.t8rin.imagetoolbox.core.resources.Icons
 import com.t8rin.imagetoolbox.core.resources.R
 import com.t8rin.imagetoolbox.core.resources.icons.AddCircle
 import com.t8rin.imagetoolbox.core.resources.icons.ArrowBack
@@ -92,14 +92,14 @@ fun AddExifSheet(
     val tags by remember(selectedTags, isTagsRemovable) {
         derivedStateOf {
             if (isTagsRemovable) {
-                val addedTags = MetadataTag.entries.filter {
+                val addedTags = MetadataTag.commonWritableEntries.filter {
                     it in selectedTags
                 }.sorted()
-                val notAddedTags = (MetadataTag.entries - addedTags.toSet()).sorted()
+                val notAddedTags = (MetadataTag.commonWritableEntries - addedTags.toSet()).sorted()
 
                 addedTags + notAddedTags
             } else {
-                MetadataTag.entries.filter {
+                MetadataTag.commonWritableEntries.filter {
                     it !in selectedTags
                 }.sorted()
             }

@@ -473,5 +473,47 @@ sealed class MetadataTag(
                 GpsDatestamp
             )
         }
+
+        val readOnlyEntries: Set<MetadataTag> by lazy {
+            setOf(
+                BitsPerSample,
+                Compression,
+                PhotometricInterpretation,
+                SamplesPerPixel,
+                PlanarConfiguration,
+                YCbCrSubSampling,
+                YCbCrPositioning,
+                StripOffsets,
+                RowsPerStrip,
+                StripByteCounts,
+                JpegInterchangeFormat,
+                JpegInterchangeFormatLength,
+                YCbCrCoefficients,
+                ReferenceBlackWhite,
+                OrfPreviewImageStart,
+                OrfPreviewImageLength
+            )
+        }
+
+        val formatSpecificEntries: Set<MetadataTag> by lazy {
+            setOf(
+                OrfPreviewImageStart,
+                OrfPreviewImageLength,
+                OrfAspectFrame,
+                Rw2SensorBottomBorder,
+                Rw2SensorLeftBorder,
+                Rw2SensorRightBorder,
+                Rw2SensorTopBorder,
+                Rw2Iso,
+                DngVersion,
+                DefaultCropSize
+            )
+        }
+
+        val commonWritableEntries: List<MetadataTag> by lazy {
+            entries.filterNot {
+                it in readOnlyEntries || it in formatSpecificEntries
+            }
+        }
     }
 }

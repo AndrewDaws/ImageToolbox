@@ -139,6 +139,7 @@ sealed class ImageFormat(
         title = title,
         extension = "avif",
         mimeType = MimeType.Avif,
+        canWriteExif = true,
         canChangeCompressionValue = true,
         compressionTypes = compressionTypes
     ) {
@@ -183,7 +184,8 @@ sealed class ImageFormat(
         extension = extension,
         mimeType = mimeType,
         compressionTypes = compressionTypes,
-        canChangeCompressionValue = true
+        canChangeCompressionValue = true,
+        canWriteExif = true
     ) {
         data object Lossless : Heic(
             title = "HEIC Lossless",
@@ -236,6 +238,7 @@ sealed class ImageFormat(
     ) : ImageFormat(
         extension = "jxl",
         mimeType = MimeType.Jxl,
+        canWriteExif = true,
         canChangeCompressionValue = true,
         title = title,
         compressionTypes = compressionTypes
@@ -263,6 +266,7 @@ sealed class ImageFormat(
         title = title,
         extension = extension,
         mimeType = MimeType.Jp2,
+        canWriteExif = true,
         canChangeCompressionValue = true,
         compressionTypes = listOf(
             CompressionType.Quality(20..100)
@@ -285,6 +289,7 @@ sealed class ImageFormat(
         title = "TIFF",
         extension = "tiff",
         mimeType = MimeType.Tiff,
+        canWriteExif = true,
         canChangeCompressionValue = true,
         compressionTypes = emptyList()
     )
@@ -293,6 +298,7 @@ sealed class ImageFormat(
         title = "TIF",
         extension = "tif",
         mimeType = MimeType.Tiff,
+        canWriteExif = true,
         canChangeCompressionValue = true,
         compressionTypes = emptyList()
     )

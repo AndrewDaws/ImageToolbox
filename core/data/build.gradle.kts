@@ -72,4 +72,8 @@ dependencies {
     implementation(projects.core.settings)
     implementation(projects.core.di)
     api(projects.core.utils)
+
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.runner)
 }

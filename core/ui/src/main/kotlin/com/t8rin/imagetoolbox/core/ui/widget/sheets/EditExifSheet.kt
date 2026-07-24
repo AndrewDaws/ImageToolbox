@@ -34,11 +34,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
-import com.t8rin.imagetoolbox.core.resources.Icons
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -58,6 +59,7 @@ import androidx.compose.ui.unit.sp
 import com.t8rin.imagetoolbox.core.domain.image.Metadata
 import com.t8rin.imagetoolbox.core.domain.image.model.MetadataTag
 import com.t8rin.imagetoolbox.core.domain.image.toMap
+import com.t8rin.imagetoolbox.core.resources.Icons
 import com.t8rin.imagetoolbox.core.resources.R
 import com.t8rin.imagetoolbox.core.resources.icons.AddCircle
 import com.t8rin.imagetoolbox.core.resources.icons.DeleteSweep
@@ -94,7 +96,7 @@ fun EditExifSheet(
     EnhancedModalBottomSheet(
         confirmButton = {
             val count = remember(exifMap) {
-                MetadataTag.entries.count {
+                MetadataTag.commonWritableEntries.count {
                     it !in (exifMap?.keys ?: emptyList())
                 }
             }
@@ -152,7 +154,7 @@ fun EditExifSheet(
                 exifMap!!.toList()
             }
         }
-        if (exifMap?.isEmpty() == false) {
+        if (data.isNotEmpty()) {
             Box {
                 LazyColumn(
                     contentPadding = PaddingValues(8.dp),
@@ -163,8 +165,10 @@ fun EditExifSheet(
                         items = data,
                         key = { _, t -> t.first.key }
                     ) { index, (tag, value) ->
+                        val isReadOnly = tag !in MetadataTag.commonWritableEntries
+
                         Column(
-                            Modifier
+                            modifier = Modifier
                                 .fillMaxWidth()
                                 .container(
                                     color = EnhancedBottomSheetDefaults.contentContainerColor,
@@ -175,20 +179,39 @@ fun EditExifSheet(
                                 )
                         ) {
                             Row {
-                                Text(
-                                    text = tag.localizedName,
-                                    fontSize = 16.sp,
+                                Column(
                                     modifier = Modifier
-                                        .padding(12.dp)
-                                        .weight(1f),
-                                    textAlign = TextAlign.Start
-                                )
+                                        .padding(
+                                            start = 12.dp,
+                                            end = 12.dp,
+                                            top = 12.dp,
+                                        )
+                                        .weight(1f)
+                                ) {
+                                    Text(
+                                        text = tag.localizedName,
+                                        fontSize = 16.sp,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Start
+                                    )
+                                    if (isReadOnly) {
+                                        Text(
+                                            text = stringResource(R.string.read_only),
+                                            fontSize = 12.sp,
+                                            lineHeight = 13.sp,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            color = LocalContentColor.current.copy(0.5f)
+                                        )
+                                    }
+                                }
                                 EnhancedIconButton(
                                     onClick = {
                                         onRemoveTag(tag)
                                         exifMap = exifMap?.toMutableMap()
                                             ?.apply { remove(tag) }
-                                    }
+                                    },
+                                    enabled = !isReadOnly,
                                 ) {
                                     Icon(
                                         imageVector = Icons.Outlined.RemoveCircle,
@@ -204,6 +227,7 @@ fun EditExifSheet(
                                             this[tag] = it
                                         }
                                 },
+                                readOnly = isReadOnly,
                                 value = value,
                                 textStyle = LocalTextStyle.current.copy(
                                     fontSize = 16.sp,
@@ -216,6 +240,16 @@ fun EditExifSheet(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(8.dp)
+                                    .then(
+                                        if (isReadOnly) {
+                                            Modifier.container(
+                                                shape = OutlinedTextFieldDefaults.shape,
+                                                resultPadding = 0.dp
+                                            )
+                                        } else {
+                                            Modifier
+                                        }
+                                    )
                             )
                         }
                     }
